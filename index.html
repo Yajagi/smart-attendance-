@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: #fdf2f2;
+            border-radius: 5px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .success {
+            color: #27ae60;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: #f2f9f2;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            border-left: 4px solid #007bff;
+        }
+
+        .demo-credentials h3 {
+            color: #007bff;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials p {
+            font-size: 0.8rem;
+            color: #666;
+            margin: 0.2rem 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-nav {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background: #0056b3;
+        }
+
+        .nav-button.active {
+            background: #28a745;
+        }
+
+        .dashboard-content {
+            padding: 2rem;
+            min-height: 400px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .qr-container img {
+            max-width: 200px;
+            margin: 1rem 0;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .attendance-table th, .attendance-table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .attendance-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .status-present {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-absent {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .camera-container {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .camera-container video {
+            max-width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: 8px;
+        }
+
+        .camera-container canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="loginContainer" class="container">
+        <div class="header">
+            <h1>🎓 Smart Attendance</h1>
+            <p>Secure Login System</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="role">Select Role:</label>
+                <select id="role" name="role" required>
+                    <option value="">Choose Role...</option>
+                    <option value="admin">Admin</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+                    <option value="parent">Parent</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="loginId">Login ID:</label>
+                <input type="text" id="loginId" name="loginId" placeholder="Enter your login ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <div id="message" class="hidden"></div>
+
+        <div class="demo-credentials">
+            <h3>Demo Credentials:</h3>
+            <p><strong>Admin:</strong> admin / password</p>
+            <p><strong>Teacher:</strong> EMP001 / password</p>
+            <p><strong>Student:</strong> CS001 / password</p>
+            <p><strong>Parent:</strong> alice.parent@email.com / password</p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <div class="dashboard-header">
+            <div>
+                <h1 id="dashboardTitle">Dashboard</h1>
+                <p id="userInfo"></p>
+            </div>
+            <button id="logoutBtn" class="btn">Logout</button>
+        </div>
+
+        <div class="dashboard-nav">
+            <div id="navigationButtons"></div>
+        </div>
+
+        <div class="dashboard-content">
+            <div id="dashboardContent"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
